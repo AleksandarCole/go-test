@@ -22,9 +22,9 @@ global_job_config:
       - cache restore go-mod-$(checksum go.sum)
       - cache restore go-build-$(checksum go.sum)
       - cache restore go-tools
-      - go mod download
-      - mkdir -p ~/go/bin
       - 'export PATH=$PATH:~/go/bin'
+      - go version || (echo "Go installation not found" && exit 1)
+      - go mod download
 blocks:
   - name: "\U0001F6E0 Setup and Cache"
     dependencies: []
