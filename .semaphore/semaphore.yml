@@ -24,13 +24,13 @@ global_job_config:
       - which go || echo "Go not found in PATH"
       - ls -la /usr/local/go/bin || echo "Go not found in /usr/local/go/bin"
       - ls -la /go/bin || echo "Go not found in /go/bin"
-      - 'export PATH=$PATH:/usr/local/go/bin:/go/bin'
+      - 'export PATH=$PATH:/usr/local/go/bin:/go/bin:~/go/bin'
+      - echo "Updated PATH=$PATH"
       - go version || echo "Go still not found after PATH update"
       - cache restore go-mod-$(checksum go.sum)
       - cache restore go-build-$(checksum go.sum)
       - cache restore go-tools
       - mkdir -p ~/go/bin
-      - 'export PATH=$PATH:~/go/bin'
       - go mod download || echo "Failed to download Go modules"
 blocks:
   - name: "\U0001F6E0 Setup and Cache"
@@ -54,6 +54,7 @@ blocks:
       jobs:
         - name: Lint and Static Analysis
           commands:
+            - 'export PATH=$PATH:~/go/bin'
             - golangci-lint run --timeout=5m
             - go vet ./...
             - staticcheck ./...
@@ -65,6 +66,7 @@ blocks:
       jobs:
         - name: Security Scan
           commands:
+            - 'export PATH=$PATH:~/go/bin'
             - govulncheck ./...
             - go list -json -m all | nancy sleuth
   - name: "\U0001F9EA Test Suite"
@@ -76,6 +78,8 @@ blocks:
           value: 5m
         - name: GO_TEST_REPORT
           value: test-results.xml
+        - name: PATH
+          value: '$PATH:~/go/bin'
       jobs:
         - name: "\U0001F7E2 Go Test"
           parallelism: 4
