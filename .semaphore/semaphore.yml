@@ -6,7 +6,7 @@ agent:
     os_image: ''
   containers:
     - name: main
-      image: 'registry.hub.docker.com/library/golang:1.21'
+      image: 'registry.semaphoreci.com/golang:1.21'
 fail_fast:
   stop:
     when: branch != 'main'
